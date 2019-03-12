@@ -3,11 +3,14 @@ package ch.uzh.ifi.seal.soprafs19.entity;
 import ch.uzh.ifi.seal.soprafs19.constant.UserStatus;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.text.SimpleDateFormat;
+
 
 @Entity
 public class User implements Serializable {
@@ -19,7 +22,7 @@ public class User implements Serializable {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(nullable = false) 
+	@Column
 	private String name;
 	
 	@Column(nullable = false, unique = true) 
@@ -30,6 +33,12 @@ public class User implements Serializable {
 
 	@Column(nullable = false)
 	private UserStatus status;
+
+	@Column(nullable = false)
+	private String creationDate;
+
+	@Column(nullable = false)
+	private String password;
 
 	public Long getId() {
 		return id;
@@ -63,6 +72,11 @@ public class User implements Serializable {
 		this.token = token;
 	}
 
+	public void setPassword(String password) {this.password = password;}
+
+	public String getPassword() {return password;}
+
+
 	public UserStatus getStatus() {
 		return status;
 	}
@@ -70,6 +84,12 @@ public class User implements Serializable {
 	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
+
+	public void setCreationDate() {
+		this.creationDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+	}
+
+	public String getCreationDate() { return creationDate; }
 
 	@Override
 	public boolean equals(Object o) {
