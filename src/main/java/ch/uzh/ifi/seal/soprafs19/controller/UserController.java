@@ -12,19 +12,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 
 @RestController
 public class UserController {
 
     private final UserService service;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     UserController(UserService service, UserRepository userRepository) {
         this.service = service;
         this.userRepository = userRepository;
     }
-
 
 
     @GetMapping("/users")
@@ -34,30 +35,35 @@ public class UserController {
 
     @PostMapping("/users")
         //  to check if the username is existed
-    ResponseEntity<User> createUser(@RequestBody User newUser) {
-        try {
-            User create_user = this.service.createUser(newUser);
-            return new ResponseEntity<>(create_user, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+    ResponseEntity<User> createUser(@RequestBody User newUser, HttpServletRequest request) {
+
+        String requestType = request.getHeader("requestType");
+        //  if the post is for register
+
+        if (requestType.contains("register")) {
+
+            try {
+                User create_user = this.service.createUser(newUser);
+                return new ResponseEntity<>(create_user, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>(null,null,HttpStatus.CONFLICT);
+            }
+        } else {
+            //  if the POST is for login
+            try {
+                String username = newUser.getUsername();
+                User user_found = this.userRepository.findByUsername(username);
+                if (user_found.getPassword().equals(newUser.getPassword())) {
+                    return new ResponseEntity<>(user_found, HttpStatus.FOUND);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
     }
-
-    @PostMapping("/users")
-        //  to check if the username is existed
-    ResponseEntity<User> user_login(@RequestBody User newUser) {
-        try {
-            String username = newUser.getUsername();
-            User user_found = this.userRepository.findByUsername(username);
-            if (user_found.getPassword() == newUser.getPassword()) {
-                return new ResponseEntity<>(user_found, HttpStatus.FOUND);
-            }else{
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        }
 }
+
+
+
