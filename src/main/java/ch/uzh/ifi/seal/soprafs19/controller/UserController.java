@@ -5,12 +5,10 @@ import ch.uzh.ifi.seal.soprafs19.repository.UserRepository;
 import ch.uzh.ifi.seal.soprafs19.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +31,32 @@ public class UserController {
         return service.getUsers();
     }
 
+    @PutMapping("/users/{id}")
+    ResponseEntity<User> updateUser(@RequestBody User newUser) {
+        Long userId = newUser.getId();
+        User user_found = this.userRepository.findById(Long.toString(userId));
+        System.out.println(userId);
+        String name = newUser.getUsername();
+        System.out.println(name);
+
+        if (!newUser.getUsername().equals(false)) {
+            user_found.setUsername(newUser.getUsername());
+        }
+
+            if (!newUser.getName().equals(false)) {
+                System.out.println("Hello!");
+                user_found.setName(newUser.getName());
+            }
+
+                if (!newUser.getBirthday().equals(false)) {
+                    user_found.setBirthday(newUser.getBirthday());
+                }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
     @PostMapping("/users")
-        //  to check if the username is existed
     ResponseEntity<User> createUser(@RequestBody User newUser, HttpServletRequest request) {
 
         String requestType = request.getHeader("requestType");
@@ -48,7 +70,7 @@ public class UserController {
             } catch (Exception e) {
                 return new ResponseEntity<>(null,null,HttpStatus.CONFLICT);
             }
-        } else {
+        }else if(requestType.contains("login")){
             //  if the POST is for login
             try {
                 String username = newUser.getUsername();
@@ -61,6 +83,15 @@ public class UserController {
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        }else{
+                String token = newUser.getToken();
+                User user_found = this.userRepository.findByToken(token);
+
+                user_found.setUsername(newUser.getUsername());
+                user_found.setBirthday(newUser.getBirthday());
+                user_found.setName(newUser.getName());
+
+                return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
 }

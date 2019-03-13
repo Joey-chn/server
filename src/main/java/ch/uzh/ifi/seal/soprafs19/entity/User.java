@@ -40,6 +40,9 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String password;
 
+	@Column(nullable = true)
+	private String birthday;
+
 	public Long getId() {
 		return id;
 	}
@@ -88,8 +91,11 @@ public class User implements Serializable {
 	public void setCreationDate() {
 		this.creationDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 	}
-
 	public String getCreationDate() { return creationDate; }
+
+	public void setBirthday(String birthday) {this.birthday = birthday;}
+
+	public String getBirthday() {return birthday;}
 
 	@Override
 	public boolean equals(Object o) {
