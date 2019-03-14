@@ -31,27 +31,38 @@ public class UserController {
         return service.getUsers();
     }
 
-    @PutMapping("/users/{id}")
-    ResponseEntity<User> updateUser(@RequestBody User newUser) {
-        Long userId = newUser.getId();
-        User user_found = this.userRepository.findById(Long.toString(userId));
-        System.out.println(userId);
-        String name = newUser.getUsername();
-        System.out.println(name);
+    @PutMapping("/users/{userId}")
+    @CrossOrigin
+    ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User newUser) {
 
-        if (!newUser.getUsername().equals(false)) {
-            user_found.setUsername(newUser.getUsername());
-        }
+        User user_update = this.userRepository.getById(userId);
+        String name = newUser.getName();
+        String username = newUser.getUsername();
+        String birthday = newUser.getBirthday();
+        System.out.println(user_update);
+        System.out.println(username);
+        System.out.println(birthday);
 
-            if (!newUser.getName().equals(false)) {
-                System.out.println("Hello!");
-                user_found.setName(newUser.getName());
-            }
 
-                if (!newUser.getBirthday().equals(false)) {
-                    user_found.setBirthday(newUser.getBirthday());
-                }
-        return new ResponseEntity<>(HttpStatus.OK);
+//        if (!newUser.getUsername().equals("false")) {
+//            System.out.println("Hello!");
+//            user_found.setUsername(newUser.getUsername());
+//        }
+//
+//            if (!newUser.getName().equals("false")) {
+//                System.out.println("Hello!");
+//                user_found.setName(newUser.getName());
+//            }
+//
+//                if (!newUser.getBirthday().equals("false")) {
+//                    user_found.setBirthday(newUser.getBirthday());
+//                }
+        user_update.setUsername(username);
+        user_update.setName(name);
+        user_update.setBirthday(birthday);
+        this.userRepository.save(user_update);
+
+        return new ResponseEntity<User>(HttpStatus.OK);
     }
 
 
@@ -84,14 +95,7 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else{
-                String token = newUser.getToken();
-                User user_found = this.userRepository.findByToken(token);
-
-                user_found.setUsername(newUser.getUsername());
-                user_found.setBirthday(newUser.getBirthday());
-                user_found.setName(newUser.getName());
-
-                return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

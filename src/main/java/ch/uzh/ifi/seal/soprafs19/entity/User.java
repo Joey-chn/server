@@ -79,7 +79,6 @@ public class User implements Serializable {
 
 	public String getPassword() {return password;}
 
-
 	public UserStatus getStatus() {
 		return status;
 	}
