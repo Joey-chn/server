@@ -45,24 +45,28 @@ public class UserController {
 
 
 //        if (!newUser.getUsername().equals("false")) {
-//            System.out.println("Hello!");
-//            user_found.setUsername(newUser.getUsername());
-//        }
-//
-//            if (!newUser.getName().equals("false")) {
-//                System.out.println("Hello!");
-//                user_found.setName(newUser.getName());
-//            }
-//
-//                if (!newUser.getBirthday().equals("false")) {
-//                    user_found.setBirthday(newUser.getBirthday());
+////            System.out.println("Hello!");
+////            user_found.setUsername(newUser.getUsername());
+////        }
+////
+////            if (!newUser.getName().equals("false")) {
+////                System.out.println("Hello!");
+////                user_found.setName(newUser.getName());
+////            }
+////
+////                if (!newUser.getBirthday().equals("false")) {
+////                    user_found.setBirthday(newUser.getBirthday());
 //                }
-        user_update.setUsername(username);
-        user_update.setName(name);
-        user_update.setBirthday(birthday);
-        this.userRepository.save(user_update);
+        if (this.userRepository.findByUsername(username) != null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }else {
+            user_update.setUsername(username);
+            user_update.setName(name);
+            user_update.setBirthday(birthday);
+            this.userRepository.save(user_update);
 
-        return new ResponseEntity<User>(HttpStatus.OK);
+            return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+        }
     }
 
 
