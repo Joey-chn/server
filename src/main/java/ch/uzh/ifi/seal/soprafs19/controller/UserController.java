@@ -57,7 +57,8 @@ public class UserController {
 ////                if (!newUser.getBirthday().equals("false")) {
 ////                    user_found.setBirthday(newUser.getBirthday());
 //                }
-        if (this.userRepository.findByUsername(username) != null) {
+        //  check the new username is not taken
+        if (this.userRepository.findByUsername(username) != null && this.userRepository.findByUsername(username).getUsername() != username) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }else {
             user_update.setUsername(username);
