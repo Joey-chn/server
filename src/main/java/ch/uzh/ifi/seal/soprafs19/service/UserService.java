@@ -76,12 +76,13 @@ public class UserService {
         //  if the post is for register
 
         if (requestType.contains("register")) {
-
-            try {
+            // check if the name exits
+            String username = newUser.getUsername();
+            if (userRepository.findByUsername(username) != null) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }else {
                 User create_user = this.createUser(newUser);
                 return new ResponseEntity<>(create_user, HttpStatus.CREATED);
-            } catch (Exception e) {
-                return new ResponseEntity<>(null,null,HttpStatus.CONFLICT);
             }
         }else if(requestType.contains("login")){
             //  if the POST is for login
