@@ -57,7 +57,7 @@ public class UserService {
         System.out.println(birthday);
 
 
-        if (this.userRepository.findByUsername(username) != null && this.userRepository.findByUsername(username).getUsername() != username) {
+        if (this.userRepository.findByUsername(username) != null && this.userRepository.findByUsername(username).getId() != userId) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }else {
             user_update.setUsername(username);
