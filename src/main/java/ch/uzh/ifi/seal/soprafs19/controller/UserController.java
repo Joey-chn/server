@@ -39,8 +39,8 @@ public class UserController {
 
 
     @PostMapping("/users")
-    ResponseEntity<User> createUser(@RequestBody User newUser, HttpServletRequest request) {
-                return service.createUser(newUser, request);
+    ResponseEntity<User> userEntry(@RequestBody User newUser, HttpServletRequest request) {
+                return service.userEntry(newUser, request);
     }
 }
 

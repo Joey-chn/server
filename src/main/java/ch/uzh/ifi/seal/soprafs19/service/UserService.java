@@ -35,6 +35,7 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
+    //  Create a newUser
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
@@ -52,9 +53,7 @@ public class UserService {
         String name = newUser.getName();
         String username = newUser.getUsername();
         String birthday = newUser.getBirthday();
-        System.out.println(user_update);
-        System.out.println(username);
-        System.out.println(birthday);
+
 
 
         if (this.userRepository.findByUsername(username) != null && this.userRepository.findByUsername(username).getId() != userId) {
@@ -70,7 +69,7 @@ public class UserService {
     }
 
     //  register and login
-    public ResponseEntity<User> createUser( User newUser, HttpServletRequest request) {
+    public ResponseEntity<User> userEntry( User newUser, HttpServletRequest request) {
 
         String requestType = request.getHeader("requestType");
         //  if the post is for register
